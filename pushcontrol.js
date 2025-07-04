@@ -15,10 +15,11 @@ async function subscribeUser() {
         applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
     });
 
+    const subs = JSON.parse(JSON.stringify(sub));
     const form = new FormData();
-    form.append('endpoint', sub.endpoint);
-    form.append('p256dh', sub.keys.p256dh);
-    form.append('auth', sub.keys.auth);
+    form.append('endpoint', subs.endpoint);
+    form.append('p256dh', subs.keys.p256dh);
+    form.append('auth', subs.keys.auth);
 
     await fetch(`${api}?q=push&t=sub`, {
         method: 'POST',
@@ -31,9 +32,10 @@ async function subscribeUser() {
 async function unsubscribeUser() {
     const reg = await navigator.serviceWorker.ready;
     const sub = await reg.pushManager.getSubscription();
+    const subs = JSON.parse(JSON.stringify(sub));
 
     const form = new FormData();
-    form.append('endpoint', sub.endpoint);
+    form.append('endpoint', subs.endpoint);
 
     if (sub) {
         await sub.unsubscribe();
@@ -60,15 +62,24 @@ async function checkSubscription() {
         return true;
     }
     else {
+        console.log('구독상태 아님');
         return false;
     }
 }
 
 
 function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
-    const rawData = atob(base64);
-    return new Uint8Array([...rawData].map(c => c.charCodeAt(0)));
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding)
+    .replace(/-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
 }
 
