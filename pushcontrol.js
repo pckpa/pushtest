@@ -2,7 +2,7 @@ const VAPID_PUBLIC_KEY = 'BKFxAExxrSCp3Uf7CcQOJNMvL3D82ZK6Hr01kFIfPC8srQ8JE_nRnW
 const api = 'https://eggplant.pcws.kr/wjbuses/back/api2.php';
 
 async function registerServiceWorker() {
-    return await navigator.serviceWorker.register('/sw.js');
+    return await navigator.serviceWorker.register('./sw.js');
 }
 
 async function subscribeUser() {
