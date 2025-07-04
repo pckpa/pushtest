@@ -21,12 +21,12 @@ async function subscribeUser() {
     form.append('p256dh', subs.keys.p256dh);
     form.append('auth', subs.keys.auth);
 
-    await fetch(`${api}?q=push&t=sub`, {
+    const res = await fetch(`${api}?q=push&t=sub`, {
         method: 'POST',
         body: form
     });
 
-    return;
+    return res;
 }
 
 async function unsubscribeUser() {
@@ -39,12 +39,12 @@ async function unsubscribeUser() {
 
     if (sub) {
         await sub.unsubscribe();
-        await fetch(`${api}?q=push&t=unsub`, {
+        const res = await fetch(`${api}?q=push&t=unsub`, {
             method: 'POST',
             body: form
         });
 
-        return;
+        return res;
     }
 }
 
